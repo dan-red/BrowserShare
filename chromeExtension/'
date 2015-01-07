@@ -1,0 +1,77 @@
+var PING_INTERVAL = 3000;
+var extensionOn = false;
+
+// TODO: HTTP Get Security?
+// Later TODO: Initialization - Tell server if master or slave.
+// Currently - Turns extension on and off to periodically ping server.
+chrome.browserAction.onClicked.addListener(function(tab) {
+  extensionOn = !(extensionOn);
+  
+  if (extensionOn) {
+    startExtension();
+  }
+  else {
+    stopExtension();
+  } 
+
+});
+
+
+// TODO: Upon visit to new URL, tell server of new URL.
+// Currently - Changes all open tabs to new URL. 
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  if (extensionOn) {
+      sendRequest("URL_Update", ["url=" + tab.url], function(response){
+          if (response.message == true){
+            console.log("Server received URL change")
+          } else{
+            console.log("Server didn't receive URL change")
+          }
+      });
+  }
+});
+
+
+// TODO: Convert periodic action from pinging to listening for updates.
+function startExtension() {
+  console.log("Extension is on");
+  sendRequest("ping", ["sender=masterClient"], function(response) {
+    console.log(response.message);
+  });
+
+  timerId = window.setTimeout(startExtension, PING_INTERVAL);
+}
+
+
+function stopExtension() {
+  clearTimeout(timerId);
+  console.log("Extension is off.");
+}
+
+
+function sendRequest(action, params, callback) {
+    var url = createURL(action, params);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status==200) {
+          var data = JSON.parse(xhr.responseText);
+          callback(data);
+        }
+    };
+    xhr.open("POST", url, true);
+    //xhr.open("POST", "http://127.0.0.1:8880/ping?sender=masterClient", true);
+    //xhr.setRequestHeader(); 
+    xhr.send();
+}
+
+
+function createURL(action, params) {
+  var url = "http://127.0.0.1:8880/";
+  url += action;
+  url += "?";
+  for (i in params) {
+    url += params[i];
+  }
+  return url;
+}
+

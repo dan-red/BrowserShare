@@ -1,0 +1,23 @@
+{
+  "name": "Browser Sharing",
+  "description": "Extension that allows users to share a browser.",
+  "version": "1.0",
+  "permissions": [
+    "activeTab", "tabs", "http://*/"
+  ],
+  "background": {
+   "scripts": ["background.js"]
+   //"scripts": ["test1.js"]
+  },
+  
+  //"content_scripts":[{
+  //     "js": ["content_scripts.js"],
+  //      "matches": ["http://*/*", "https://*/*"]
+  //}],
+  
+  "web_accessible_resources": ["script.js"],
+  "browser_action": {
+    "default_title": "Initialize Browser Sharing"
+  },
+  "manifest_version": 2
+}

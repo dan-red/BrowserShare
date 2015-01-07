@@ -1,0 +1,9 @@
+# Twisted Library Folders
+twisted/
+Twisted-14.0.2-py2.7.egg-info/
+Scripts/
+
+# Swap/Backup Files
+*.swp
+*.swo
+*~

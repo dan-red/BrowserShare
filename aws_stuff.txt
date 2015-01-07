@@ -1,0 +1,3 @@
+- use account name "Arn" in CS91-AWS
+- https://see_above.signin.aws.amazon.com/console
+- remember to use ubuntu@ec2... intead of ec2_user@ec2... to ssh correctly
